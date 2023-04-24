@@ -1,0 +1,20 @@
+Gradle setup:
+
+1. Download binaries from https://gradle.org/releases/
+2. Unzip and install binaries: unzip -d ~/gradle/
+3. Make sure the System path is corrrectly configured to the install directory: 
+export PATH=/home/$USER/tools/bin/gradle-7.6.1/bin:$PATH
+4. Check if gradle is installed: gradle -v
+5. Configure gradle build using init plugin: 
+gradle init. Select the options for configuring application/library etc.
+6. Run the gradle wrapper command:
+gradle wrapper
+7. Check if gradle is working fine, run:
+./gradle tasks
+
+Intellij setup:
+1. Import project from existing resource and pass the settings gradle file
+
+
+Spring boot setup:
+1. https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins.html#build-tool-plugins.gradle
