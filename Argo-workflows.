@@ -52,6 +52,7 @@ kubectl get pods -n argolocal
 
 3. Run actual workflow:
 argo submit --kubeconfig $HOME/.kube/my_minikube_config --watch -n argolocal https://raw.githubusercontent.com/argoproj/argo-workflows/master/examples/hello-world.yaml
+Note: We can run workflows across entrypoints and parameters by passing the --parameter-file and --entrypoint options
 
 4. List workflows:
 argo list --kubeconfig $HOME/.kube/my_minikube_config -n argo
