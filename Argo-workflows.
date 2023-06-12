@@ -1,0 +1,67 @@
+To Simulate and test Argo workflows in Localized environments
+
+1. Install minikube: 
+
+wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+chmod +x minikube-linux-amd64
+mkdir minikube
+mv minikube-linux-amd64 ./minikube/minikube
+export PATH=$PATH:$HOME/minikube
+# check if $HOME/.kube directory is present, else
+mkdir -p $HOME/.kube
+#OVERRIDE THE kubeconfig which is hosted at /etc/arcesium : 
+export KUBECONFIG=$HOME/.kube/my_minikube_config
+
+2. Start minikube: 
+
+# Let's start minikube with 4 cpus and 8 gigs of ram since it would be required for all the pods we will be creating
+minikube start --memory 8192 --cpus 4 --driver=docker --kubernetes-version=$(kubectl version -o json --client | jq .clientVersion | jq .gitVersion | tr -d '"')
+
+3. Mount AWS / Kerberos credentials on minikube.
+
+4. Create Argo namespace
+
+kubectl create namespace argo
+kubectl apply -n argo -f https://github.com/argoproj/argo-workflows/releases/download/v3.4.4/install.yaml
+
+5. Patch deployment to change auth mode. The default is client mode, in local mode it uses kubeconfig.
+
+kubectl patch deployment \
+  argo-server \
+  --namespace argo \
+  --type='json' \
+  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": [
+  "server",
+  "--auth-mode=server"
+]}]'
+
+6. Portforward the UI:
+
+kubectl -n argo port-forward deployment/argo-server 2746:2746
+
+==========================================================================================================================================================================
+
+
+1. See argo local namespace created or not.
+
+kubectl get namespace argolocal
+
+2. Verify that the pods are up and running:
+
+kubectl get pods -n argolocal
+
+3. Run actual workflow:
+argo submit --kubeconfig $HOME/.kube/my_minikube_config --watch -n argolocal https://raw.githubusercontent.com/argoproj/argo-workflows/master/examples/hello-world.yaml
+
+4. List workflows:
+argo list --kubeconfig $HOME/.kube/my_minikube_config -n argo
+
+5. View details of a particular workflow:
+argo get hello-world-ffqsd--kubeconfig $HOME/.kube/my_minikube_config -n argolocal
+
+6. View latest detail of a workflow run:
+argo get @latest --kubeconfig $HOME/.kube/my_minikube_config -n argolocal
+
+7. View logs of workflow:
+argo logs hello-world-rtpr7 --kubeconfig $HOME/.kube/my_minikube_config -n argolocal
+
