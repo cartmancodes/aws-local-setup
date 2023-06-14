@@ -50,7 +50,10 @@ kubectl get namespace argolocal
 
 kubectl get pods -n argolocal
 
-3. Run actual workflows:
+3. Create role binding: 
+ kubectl create rolebinding default-admin --clusterrole=admin --serviceaccount=argo:default --namespace=argo
+
+4. Run actual workflows:
   a. argo submit --kubeconfig $HOME/.kube/my_minikube_config --watch -n argo https://raw.githubusercontent.com/argoproj/argo-workflows/master/examples/hello-world.yaml
 
   b. argo submit --kubeconfig $HOME/.kube/my_minikube_config --watch -n argo <file_path>
@@ -59,15 +62,15 @@ kubectl get pods -n argolocal
 
 Note: We can run workflows across entrypoints and parameters by passing the --parameter-file and --entrypoint options
 
-4. List workflows:
+5. List workflows:
 argo list --kubeconfig $HOME/.kube/my_minikube_config -n argo
 
-5. View details of a particular workflow:
+6. View details of a particular workflow:
 argo get hello-world-ffqsd--kubeconfig $HOME/.kube/my_minikube_config -n argo
 
-6. View latest detail of a workflow run:
+7. View latest detail of a workflow run:
 argo get @latest --kubeconfig $HOME/.kube/my_minikube_config -n argo
 
-7. View logs of workflow:
+8. View logs of workflow:
 argo logs hello-world-rtpr7 --kubeconfig $HOME/.kube/my_minikube_config -n argo
 
